@@ -1,0 +1,7 @@
+terraform:
+  version_requirement: "~> 0.11.0"
+
+backend:
+  type: s3
+  bucket: tatusl-ep-terraform-remote-state
+  region: eu-west-1
