@@ -8,8 +8,11 @@
 
 set -eux
 
-# Install pip for installing aws-cli
+# Upgrade packages
 apt-get update
+apt-get upgrade
+
+# Install pip for installing aws-cli
 apt-get install -y python-pip
 pip install awscli
 
