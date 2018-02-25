@@ -8,6 +8,11 @@
 
 set -eux
 
+# Install pip for installing aws-cli
+apt-get update
+apt-get install -y python-pip
+pip install awscli
+
 # Install newer Docker from docker. repositories
 
 apt-get update
