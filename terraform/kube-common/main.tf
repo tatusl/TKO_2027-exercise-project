@@ -22,6 +22,16 @@ data "terraform_remote_state" "bastion" {
   }
 }
 
+data "terraform_remote_state" "kube-cluster-alb" {
+  backend = "s3"
+
+  config {
+    bucket = "tatusl-ep-terraform-remote-state"
+    key    = "kube-cluster-alb_${var.env}.tfstate"
+    region = "eu-west-1"
+  }
+}
+
 resource "aws_key_pair" "kube_cluster_node" {
   key_name   = "kube_cluster_node"
   public_key = "${file("files/cluster_node_public_key.pem.pub")}"
@@ -41,18 +51,26 @@ resource "aws_security_group" "kube_cluster_node" {
   }
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
     security_groups = ["${data.terraform_remote_state.bastion.bastion_security_group_id}"]
   }
 
   # TODO: Kubernetes API access (port 6443)should be only allowed for master
   ingress {
-    from_port = 6443
-    to_port   = 6443
-    protocol  = "tcp"
+    from_port       = 6443
+    to_port         = 6443
+    protocol        = "tcp"
     security_groups = ["${data.terraform_remote_state.bastion.bastion_security_group_id}"]
+  }
+
+  # TODO: ingress-nginx NodePort (30080) should be only allowed for workers
+  ingress {
+    from_port       = 30080
+    to_port         = 30080
+    protocol        = "tcp"
+    security_groups = ["${data.terraform_remote_state.kube-cluster-alb.security_group_id}"]
   }
 
   egress {
