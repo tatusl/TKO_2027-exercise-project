@@ -4,9 +4,15 @@ metadata:
   name: test
 spec:
   rules:
-  - host: foo.bar.com
+  - host: hello.k8s.tatusl.xyz
     http:
       paths:
       - backend:
           serviceName: hello-world
+          servicePort: 80
+  - host: kuard.k8s.tatusl.xyz
+    http:
+      paths:
+      - backend:
+          serviceName: kuard
           servicePort: 80
