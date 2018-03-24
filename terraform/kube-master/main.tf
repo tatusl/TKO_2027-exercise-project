@@ -16,11 +16,22 @@ data "terraform_remote_state" "kube-common" {
   }
 }
 
+data "terraform_remote_state" "vpc" {
+  backend = "s3"
+
+  config {
+    bucket = "tatusl-ep-terraform-remote-state"
+    key    = "vpc_${var.env}.tfstate"
+    region = "eu-west-1"
+  }
+}
+
 resource "aws_instance" "kube_master" {
   ami                    = "${var.ami_id}"
   instance_type          = "t2.small"
   key_name               = "${data.terraform_remote_state.kube-common.kube_cluster_node_ssh_key}"
   iam_instance_profile   = "${aws_iam_instance_profile.k8s_master.id}"
+  subnet_id              = "${data.terraform_remote_state.vpc.private_subnets[0]}"
   vpc_security_group_ids = ["${data.terraform_remote_state.kube-common.kube_cluster_security_group}"]
   user_data              = "${file("files/user_data.sh")}"
 
