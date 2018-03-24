@@ -1,3 +1,7 @@
+variable "env" {
+  description = "The environment, provided by `tf`"
+}
+
 variable "ami_id" {
   description = "ID of AMI for cluster worker nodes"
   default     = "ami-02bbc07b"

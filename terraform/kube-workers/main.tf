@@ -16,6 +16,16 @@ data "terraform_remote_state" "kube-common" {
   }
 }
 
+data "terraform_remote_state" "vpc" {
+  backend = "s3"
+
+  config {
+    bucket = "tatusl-ep-terraform-remote-state"
+    key    = "vpc_${var.env}.tfstate"
+    region = "eu-west-1"
+  }
+}
+
 resource "aws_launch_configuration" "kube_workers" {
   name_prefix          = "kube_workers_launch_config"
   instance_type        = "${var.instance_type}"
@@ -32,7 +42,7 @@ resource "aws_launch_configuration" "kube_workers" {
 
 resource "aws_autoscaling_group" "ecs" {
   name                 = "kube_workers_asg"
-  vpc_zone_identifier  = ["subnet-390c9961"]
+  vpc_zone_identifier  = ["${data.terraform_remote_state.vpc.private_subnets[0]}"]
   launch_configuration = "${aws_launch_configuration.kube_workers.name}"
   min_size             = "${var.min_size}"
   max_size             = "${var.max_size}"
