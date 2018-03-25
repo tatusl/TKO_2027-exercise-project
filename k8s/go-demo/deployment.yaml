@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kuard
+  name: go-demo
 spec:
   selector:
     matchLabels:
-      app: kuard
-  replicas: 4
+      app: go-demo
+  replicas: 6
   template:
     metadata:
       labels:
-        app: kuard
+        app: go-demo
     spec:
       containers:
-      - name: kuard
-        image: gcr.io/kuar-demo/kuard-amd64:1
+      - name: go-demo
+        image: pmorjan/demo
         ports:
         - containerPort: 8080

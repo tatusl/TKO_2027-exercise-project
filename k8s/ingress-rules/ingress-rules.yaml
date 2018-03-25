@@ -10,9 +10,9 @@ spec:
       - backend:
           serviceName: hello-world
           servicePort: 80
-  - host: kuard.k8s.tatusl.xyz
+  - host: demo.k8s.tatusl.xyz
     http:
       paths:
       - backend:
-          serviceName: kuard
+          serviceName: go-demo
           servicePort: 80
